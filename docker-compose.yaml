@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  web:
+    image: thecodingmachine/php:7.4-v4-apache-node14
+    environment:
+      TEMPLATE_PHP_INI: "development"
+      PHP_EXTENSION_XDEBUG: 1
+      APACHE_DOCUMENT_ROOT: "public"
+    volumes:
+      - "./:/var/www/html/"
+    ports:
+      - 8000:80
