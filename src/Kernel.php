@@ -6,6 +6,6 @@ class Kernel
 {
     public function handleIndexRequest(): void
     {
-        echo json_encode(['title' => 'Discount service', 'time' => time()]);
+        echo json_encode(['title' => 'Assessment from api', 'time' => time()]);
     }
 }

@@ -15,3 +15,5 @@ Coding requirements
 * you can use any docker images (as long and other requirements are still true), 
 you can also change the current docker image to different one
 * commit as often as it makes sense
+* you can use typescript instead of javascript
+* use `make start-js-dev` to run webpack dev server with hot reload
