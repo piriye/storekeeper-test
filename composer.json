@@ -4,6 +4,7 @@
   "type": "project",
   "require": {
     "php": "^7.3|^8.0",
+    "ext-json": "*",
     "symfony/http-foundation": "^5.3",
     "symfony/routing": "^5.3"
   },

@@ -1,4 +1,4 @@
-# Executables: vendors
+
 DOCKER_RUN    = docker-compose run --rm web
 PHPUNIT       = ./vendor/bin/phpunit
 PHPSTAN       = ./vendor/bin/phpstan
