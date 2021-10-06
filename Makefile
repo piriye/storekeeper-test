@@ -8,6 +8,12 @@ PHP_CS_FIXER  = ./vendor/bin/php-cs-fixer
 start:
 	docker-compose up -d
 
+install:
+	$(DOCKER_RUN) composer install
+
+update:
+	$(DOCKER_RUN) composer update
+
 test:
 	$(DOCKER_RUN) $(PHPUNIT)
 
