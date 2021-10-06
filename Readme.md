@@ -2,6 +2,8 @@
 Coding requirements
 ==
 
+* you need [docker-compose](https://docs.docker.com/compose/install/) and [docker](https://docs.docker.com/engine/install/) to run this project
+* you need [gnu make](https://www.gnu.org/software/make/) as well to execute common commands 
 * must use version PHP 7.3 or higher
 * `symfony/http-foundation` and `symfony/routing` component must be used in solution 
 * no full framework can be used - the symfony components should be used directly (you can use any symfony components thought)
