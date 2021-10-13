@@ -19,7 +19,7 @@ try {
     if (is_null($json)) {
         throw new BadRequestException('Failed to decode json: '.json_last_error_msg());
     }
-    if (!array_key_exists('value', $json) && is_numeric($json['value'])) {
+    if (!array_key_exists('value', $json) || !is_numeric($json['value'])) {
         throw new BadRequestException('.value needs to be a numeric');
     }
     $valid = $json['value'] <= 1000 && $json['value'] > 0;
