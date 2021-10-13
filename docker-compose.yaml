@@ -11,3 +11,25 @@ services:
       - "./:/var/www/html/"
     ports:
       - 8000:80
+
+  db:
+    restart: always
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=backend
+      - POSTGRES_USER=backend
+      - POSTGRES_PASSWORD=backend
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
+
+  validate-api:
+    image: thecodingmachine/php:7.4-v4-apache-node14
+    environment:
+      APACHE_DOCUMENT_ROOT: "validation-public"
+    volumes:
+      - "./:/var/www/html/"
+    ports:
+      - 8001:80
+
+volumes:
+  db-data: {}
