@@ -10,14 +10,15 @@ class Kernel
 {
     public function handleRequest(Request $request): Response
     {
-        $pdo = $this->getDbConnection();
-        $now = $this->getDbNow($pdo);
-        $response = new JsonResponse([
-            'title' => 'Assessment from api',
-            'time' => time(),
-            'dbtime' => $now,
-            'path' => $request->getPathInfo(),
-        ]);
+        // todo implement proper json-rpc handling
+        $result = $this->doInfo();
+        $response = new JsonResponse(
+            [
+                'jsonrpc' => '2.0',
+                'result' => $result,
+                'id' => 3,
+            ]
+        );
         $response->headers->set('Access-Control-Allow-Origin', '*');
 
         return $response;
@@ -42,5 +43,18 @@ class Kernel
         $now = $statement->fetchColumn(0);
 
         return $now;
+    }
+
+    protected function doInfo(): array
+    {
+        $pdo = $this->getDbConnection();
+        $now = $this->getDbNow($pdo);
+        $result = [
+            'title' => 'Assessment from api',
+            'time' => time(),
+            'dbtime' => $now,
+        ];
+
+        return $result;
     }
 }

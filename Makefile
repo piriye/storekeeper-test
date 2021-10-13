@@ -35,5 +35,5 @@ check-standards:
 	$(DOCKER_RUN) npm run lint
 
 lint-fix:
-	$(DOCKER_RUN) npm run lint --fix
+	$(DOCKER_RUN) npm run lint-fix
 	$(DOCKER_RUN) $(PHP_CS_FIXER) fix

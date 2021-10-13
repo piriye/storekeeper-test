@@ -2,11 +2,11 @@ import { View } from 'backbone.marionette';
 import { Model } from 'backbone';
 import _, { template } from 'underscore';
 import $ from 'jquery';
+import { info } from './api';
 
 _.templateSettings = {
   interpolate: /\{\{(.+?)\}\}/g,
 };
-const apiUrl = 'http://localhost:8000/api/';
 
 const CounterView = View.extend({
   modelEvents: {
@@ -31,9 +31,8 @@ const MyView = View.extend({
 
   async loadApiData() {
     try {
-      const response = await fetch(apiUrl);
-      const decoded = await response.json();
-      this.model.set('response', decoded.title);
+      const response = await info();
+      this.model.set('response', response.title);
     } catch (e) {
       this.model.set('response', `Error! ${e}`);
     }

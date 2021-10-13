@@ -9,8 +9,9 @@
   "scripts": {
     "start": "webpack-dev-server --mode=development",
     "prebuild": "rm  -rf ./public/*.html ./public/*.ico ./public/*.js ./public/*.js.map ./public/*.txt ./public/*.css  || echo empty",
-    "build": "npm run lint --fix && webpack --mode=production",
+    "build": "npm run lint-fix && webpack --mode=production",
     "lint": "eslint js",
+    "lint-fix": "eslint js --fix",
     "test": "echo test"
   },
   "repository": {
