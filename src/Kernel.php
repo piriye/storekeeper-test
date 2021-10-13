@@ -2,10 +2,21 @@
 
 namespace Storekeeper\AssesFullstackApi;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 class Kernel
 {
-    public function handleIndexRequest(): void
+    public function handleRequest(Request $request): Response
     {
-        echo json_encode(['title' => 'Assessment from api', 'time' => time()]);
+        $response = new JsonResponse([
+            'title' => 'Assessment from api',
+            'time' => time(),
+            'path' => $request->getPathInfo(),
+        ]);
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+
+        return $response;
     }
 }

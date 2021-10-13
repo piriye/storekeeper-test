@@ -19,6 +19,6 @@
 /var/
 .DS_Store
 .php-cs-fixer.cache
-/public/!api
 /public/*
+!/public/api/
 /node_modules
