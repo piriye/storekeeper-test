@@ -9,7 +9,7 @@ Services:
 ==
 
 * SPA gui: http://localhost:8000/
-* validation api: //localhost:8001/ (from inside docker: http://validate-api/)
+* validation api: http://localhost:8001/ (from inside docker: http://validate-api/)
 * php backend api:  http://localhost:8000/api/
 
 For javascript dev server use the http://172.x.x.x address echoed on the server start.
