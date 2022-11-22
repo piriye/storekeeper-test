@@ -5,7 +5,7 @@ namespace Storekeeper\AssesFullstackApi\Repositories;
 use PDO;
 use Storekeeper\AssesFullstackApi\Repositories\BaseRepository;
 
-class OrderRepository extends BaseRepository
+class ItemRepository extends BaseRepository
 {
     private $pdo;
 
@@ -15,29 +15,20 @@ class OrderRepository extends BaseRepository
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
-    public function getAll(string $columns = '*'): array
-    {
-        $query = "SELECT " . $columns . " FROM orders";     
-        $statement = $this->pdo->prepare($query);
-        $statement->execute();
-
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function createOrder($fields, $values): array
+    public function createItem($fields, $values): string
     {
         $query = $this->prepareInsertQuery($fields, $values,  $this->operators['comma']);
-        $queryString = "INSERT INTO orders " . $query;
+        $queryString = "INSERT INTO items " . $query;
 
         $statement = $this->pdo->prepare($queryString);
         $statement->execute();
 
-        return $this->getOrderByOrderId((int) $this->pdo->lastInsertId());
+        return $this->pdo->lastInsertId();
     }
 
-    public function getOrderByOrderId(int $orderId, string $columns = '*')
+    public function getItemByName(string $name, string $columns = '*')
     {
-        $query = "SELECT " . $columns . " FROM orders WHERE id = " . $orderId;
+        $query = "SELECT " . $columns . " FROM items WHERE name = '" . $name . "'";
         $statement = $this->pdo->prepare($query);
         $statement->execute();
 

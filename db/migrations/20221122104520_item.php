@@ -22,7 +22,7 @@ final class Item extends AbstractMigration
 
         $items
             ->addColumn('name', 'string', ['limit' => 45, 'null' => false])
-            ->addColumn('price', 'decimal', ['precision' => 4, 'scale' => 3])
+            ->addColumn('price', 'decimal')
             ->addColumn('created_at', 'timestamp', ['null' => false, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'timestamp', ['null' => false, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
 

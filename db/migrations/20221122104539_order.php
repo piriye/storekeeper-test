@@ -22,9 +22,10 @@ final class Order extends AbstractMigration
 
         $items
             ->addColumn('order_number', 'string', ['limit' => 45, 'null' => false])
-            ->addColumn('total_price', 'decimal', ['precision' => 4, 'scale' => 3])
+            ->addColumn('total_price', 'decimal')
             ->addColumn('created_at', 'timestamp', ['null' => false, 'default' => 'CURRENT_TIMESTAMP'])
-            ->addColumn('updated_at', 'timestamp', ['null' => false, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP']);
+            ->addColumn('updated_at', 'timestamp', ['null' => false, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+            ->addIndex(['order_number'], ['unique' => true]);
 
         $items->create();
 
@@ -32,6 +33,7 @@ final class Order extends AbstractMigration
         $refTable
             ->addColumn('order_id', 'integer', ['limit' => 45, 'null' => false])
             ->addColumn('item_id', 'integer', ['limit' => 45, 'null' => false])
+            ->addColumn('quantity', 'integer', ['limit' => 45, 'null' => false])
 
             ->addForeignKey('order_id', 'orders', 'id', ['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])
             ->addForeignKey('item_id', 'items', 'id', ['delete'=> 'SET_NULL', 'update'=> 'NO_ACTION'])

@@ -25,14 +25,22 @@ $injector->define('PDO', [
 ]);
 
 // Repositories
+$injector->alias('ItemRepository', 'Storekeeper\AssesFullstackApi\Repositories\ItemRepository');
+$injector->share('Storekeeper\AssesFullstackApi\Repositories\ItemRepository');
+
 $injector->alias('OrderRepository', 'Storekeeper\AssesFullstackApi\Repositories\OrderRepository');
 $injector->share('Storekeeper\AssesFullstackApi\Repositories\OrderRepository');
+
+$injector->alias('OrderItemRepository', 'Storekeeper\AssesFullstackApi\Repositories\OrderItemRepository');
+$injector->share('Storekeeper\AssesFullstackApi\Repositories\OrderItemRepository');
 
 // Services
 $injector->alias('OrderService', 'Storekeeper\AssesFullstackApi\Services\OrderService');
 $injector->share('Storekeeper\AssesFullstackApi\Services\OrderService');
 $injector->define('OrderService', [
-    'recipeRepo' => 'OrderRepository',
+    'itemRepo' => 'ItemRepository',
+    'orderItemRepo' => 'OrderItemRepository',
+    'orderRepo' => 'OrderRepository',
 ]);
 
 return $injector;
