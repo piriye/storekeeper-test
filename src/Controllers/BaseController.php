@@ -3,9 +3,9 @@
 namespace Storekeeper\AssesFullstackApi\Controllers;
 
 use Http\Response;
-// use Teapot\StatusCode;
+use Teapot\StatusCode;
 
-class BaseController
+class BaseController implements StatusCode
 {
     private $response;
 

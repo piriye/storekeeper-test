@@ -5,6 +5,8 @@ namespace Storekeeper\AssesFullstackApi\Controllers;
 use Error;
 use Http\Request;
 use Http\Response;
+use Valitron\Validator;
+
 use Storekeeper\AssesFullstackApi\Controllers\BaseController;
 use Storekeeper\AssesFullstackApi\Services\OrderService;
 
@@ -23,13 +25,20 @@ class OrderController extends BaseController
 
     public function store()
     {
-        try {
-            $requestData = $this->request->getBodyParameters();
-    
-            $orderData = $this->orderService->createOrder($requestData);
-            $this->sendResponse(201, $orderData, 'Successfully placed order');
-        } catch (Error $e) {
-            $this->sendResponse(400, null, $e->getMessage());
+        $requestData = $this->request->getBodyParameters();
+        
+        $v = new Validator($requestData);
+        $v->rule('required', ['name', 'price', 'quantity']);
+
+        if ($v->validate()) {
+            try {
+                $orderData = $this->orderService->createOrder($requestData);
+                $this->sendResponse(self::CREATED, $orderData, 'Successfully placed order');
+            } catch (Error $e) {
+                return $this->sendResponse(self::BAD_REQUEST, null, $e->getMessage());
+            }
+        } else {
+            return $this->sendResponse(self::BAD_REQUEST, null, $v->errors());
         }
     }
 }
