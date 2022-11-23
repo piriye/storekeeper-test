@@ -3,6 +3,10 @@
 namespace Storekeeper\AssesFullstackApi\Services;
 
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+
+use Storekeeper\AssesFullstackApi\Helpers\HttpRequestHelper;
+use Storekeeper\AssesFullstackApi\Helpers\OrderHelper;
 use Storekeeper\AssesFullstackApi\Repositories\ItemRepository;
 use Storekeeper\AssesFullstackApi\Repositories\OrderItemRepository;
 use Storekeeper\AssesFullstackApi\Repositories\OrderRepository;
@@ -10,6 +14,8 @@ use Storekeeper\AssesFullstackApi\Repositories\OrderRepository;
 class OrderService
 {
     const VAT = 1;
+
+    private $httpRequestHelper;
 
     public function __construct(
         ItemRepository $itemRepo,
@@ -19,10 +25,20 @@ class OrderService
         $this->itemRepo = $itemRepo;
         $this->orderRepo = $orderRepo;
         $this->orderItemRepo = $orderItemRepo;
+
+        $this->httpRequestHelper = new HttpRequestHelper();
     }
 
     public function createOrder($orderData)
     {
+        $orderDataArray = OrderHelper::objectToArray($orderData);
+
+        $totalPrice = OrderHelper::getOrderTotal($orderDataArray['items']);
+
+        if (!$this->validateOrder($orderDataArray['items'])) {
+            throw new BadRequestException('Invalid order');
+        };
+
         $orderUUID = Uuid::uuid4();
 
         $orderFields = ['number'];
@@ -32,8 +48,6 @@ class OrderService
 
         $totalPrice = 0;
     
-        $orderDataArray = $this->objectToArray($orderData);
-
         foreach ($orderDataArray['items'] as $item) {
             $fetchedItem = $this->itemRepo->getItemByName($item['name']);
 
@@ -73,17 +87,12 @@ class OrderService
         return $this->orderRepo->updateOrderById($orderId, $fields, $values);
     }
 
-    public function objectToArray($obj) {
-        if (is_object($obj) || is_array($obj)) {
-            $ret = (array) $obj;
+    public function validateOrder($totalPrice) 
+    {
+        $url = "http://validate-api";
+        $response = $this->httpRequestHelper->sendPost($url, [ "value" => $totalPrice ]);
 
-            foreach($ret as &$item) {
-                $item = $this->objectToArray($item);
-            }
-            return $ret;
-        }  else {
-            return $obj;
-        }
+        return $response['valid'];
     }
 }
 

@@ -2,9 +2,9 @@
 
 namespace Storekeeper\AssesFullstackApi\Controllers;
 
-use Error;
 use Http\Request;
 use Http\Response;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Valitron\Validator;
 
 use Storekeeper\AssesFullstackApi\Controllers\BaseController;
@@ -31,19 +31,30 @@ class DispatchController extends BaseController
         $v->rule('required', ['jsonrpc', 'method', 'params']);
 
         if ($v->validate()) {
-            switch ($requestData['method']) {
-                case "info":
-                    $this->sendResponse(self::OK, [], 'Not yet implemented');
-                    break;
-
-                case "login":
-                    $this->sendResponse(self::OK, [], 'Not yet implemented');
-                    break;
-
-                case "order":
-                    $orderData = $this->orderService->createOrder($requestData['params']);
-                    $this->sendResponse(self::OK, $orderData);
-                    break;
+            try {
+                $fieldsToAdd = [];
+    
+                if (array_key_exists("id", $requestData)) {
+                    $fieldsToAdd = [ "id" => $requestData['id'] ];
+                }
+    
+                switch ($requestData['method']) {
+                    case "info":
+                        $fieldsToAdd = [ "valid" => false ];
+                        $this->sendResponse(self::OK, [], $fieldsToAdd);
+                        break;
+    
+                    case "login":
+                        $this->sendResponse(self::OK, [], $fieldsToAdd);
+                        break;
+    
+                    case "order":
+                        $orderData = $this->orderService->createOrder($requestData['params']);
+                        $this->sendResponse(self::OK, $orderData, $fieldsToAdd);
+                        break;
+                }
+            } catch (BadRequestException $e) {
+                return $this->sendResponse(self::BAD_REQUEST, $e->getMessage());
             }
         } else {
             return $this->sendResponse(self::BAD_REQUEST, null, $v->errors());
