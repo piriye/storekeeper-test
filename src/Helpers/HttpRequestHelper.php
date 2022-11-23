@@ -3,7 +3,9 @@
 namespace Storekeeper\AssesFullstackApi\Helpers;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class HttpRequestHelper
 {
@@ -16,18 +18,27 @@ class HttpRequestHelper
         $this->request = new Request('POST', 'http://validate-api');
     }
 
-    public function sendPost(string $url, array $postData)
+    public function sendPost(array $postData)
     {
-        $response = $this->client->send($this->request, [
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ],
-            'json' => $postData
-        ]);
+        try {
+            $response = $this->client->send($this->request, [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => $postData
+            ]);
+    
+            $responseBody = (string) $response->getBody();
+            $jsonResponse = json_decode($responseBody, true);
+    
+            return $jsonResponse;
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+            $responseBodyAsString = $response->getBody()->getContents();
 
-        $responseBody = (string) $response->getBody();
-        $jsonResponse = json_decode($responseBody, true);
+            $jsonErrorResponse = json_decode($responseBodyAsString, true);
 
-        return $jsonResponse;
+            throw new BadRequestException($jsonErrorResponse['error']);
+        }
     }
 }
