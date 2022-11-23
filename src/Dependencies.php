@@ -34,13 +34,23 @@ $injector->share('Storekeeper\AssesFullstackApi\Repositories\OrderRepository');
 $injector->alias('OrderItemRepository', 'Storekeeper\AssesFullstackApi\Repositories\OrderItemRepository');
 $injector->share('Storekeeper\AssesFullstackApi\Repositories\OrderItemRepository');
 
+$injector->alias('UserRepository', 'Storekeeper\AssesFullstackApi\Repositories\UserRepository');
+$injector->share('Storekeeper\AssesFullstackApi\Repositories\UserRepository');
+
 // Services
 $injector->alias('OrderService', 'Storekeeper\AssesFullstackApi\Services\OrderService');
 $injector->share('Storekeeper\AssesFullstackApi\Services\OrderService');
 $injector->define('OrderService', [
+    'authService' => 'AuthService',
     'itemRepo' => 'ItemRepository',
     'orderItemRepo' => 'OrderItemRepository',
     'orderRepo' => 'OrderRepository',
+]);
+
+$injector->alias('AuthService', 'Storekeeper\AssesFullstackApi\Services\AuthService');
+$injector->share('Storekeeper\AssesFullstackApi\Services\AuthService');
+$injector->define('AuthService', [
+    'userRepo' => 'UserRepository',
 ]);
 
 return $injector;

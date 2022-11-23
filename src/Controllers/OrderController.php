@@ -15,8 +15,11 @@ class OrderController extends BaseController
     private $request;
     private $response;
 
-    public function __construct(Request $request, Response $response, OrderService $orderService)
-    {
+    public function __construct(
+        Request $request, 
+        Response $response, 
+        OrderService $orderService
+    ) {
         parent::__construct($response);
 
         $this->request = $request;

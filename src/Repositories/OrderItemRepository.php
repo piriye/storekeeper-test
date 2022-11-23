@@ -8,6 +8,7 @@ use Storekeeper\AssesFullstackApi\Repositories\BaseRepository;
 class OrderItemRepository extends BaseRepository
 {
     private $pdo;
+    private $table = 'order_items';
 
     public function __construct(PDO $pdo)
     {
@@ -18,7 +19,7 @@ class OrderItemRepository extends BaseRepository
     public function createOrderItem($fields, $values): string
     {
         $query = $this->prepareInsertQuery($fields, $values,  $this->operators['comma']);
-        $queryString = "INSERT INTO order_items " . $query;
+        $queryString = "INSERT INTO $this->table " . $query;
 
         $statement = $this->pdo->prepare($queryString);
         $statement->execute();

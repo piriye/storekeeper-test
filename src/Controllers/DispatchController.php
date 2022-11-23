@@ -9,17 +9,23 @@ use Valitron\Validator;
 
 use Storekeeper\AssesFullstackApi\Controllers\BaseController;
 use Storekeeper\AssesFullstackApi\Services\OrderService;
+use Storekeeper\AssesFullstackApi\Services\AuthService;
 
 class DispatchController extends BaseController
 {
     private $request;
     private $response;
 
-    public function __construct(Request $request, Response $response, OrderService $orderService)
-    {
+    public function __construct(
+        Request $request, 
+        Response $response, 
+        OrderService $orderService, 
+        AuthService $authService
+    ) {
         parent::__construct($response);
 
         $this->request = $request;
+        $this->authService = $authService;
         $this->orderService = $orderService;
     }
 
@@ -45,7 +51,8 @@ class DispatchController extends BaseController
                         break;
     
                     case "login":
-                        $this->sendResponse(self::OK, [], $fieldsToAdd);
+                        $userData = $this->authService->login($requestData['params']);
+                        $this->sendResponse(self::OK, $userData, $fieldsToAdd);
                         break;
     
                     case "order":

@@ -10,6 +10,7 @@ use Storekeeper\AssesFullstackApi\Helpers\OrderHelper;
 use Storekeeper\AssesFullstackApi\Repositories\ItemRepository;
 use Storekeeper\AssesFullstackApi\Repositories\OrderItemRepository;
 use Storekeeper\AssesFullstackApi\Repositories\OrderRepository;
+use Storekeeper\AssesFullstackApi\Services\AuthService;
 
 class OrderService
 {
@@ -18,10 +19,13 @@ class OrderService
     private $httpRequestHelper;
 
     public function __construct(
+        AuthService $authService,
         ItemRepository $itemRepo,
         OrderItemRepository $orderItemRepo,
         OrderRepository $orderRepo
     ) {
+        $this->authService = $authService;
+
         $this->itemRepo = $itemRepo;
         $this->orderRepo = $orderRepo;
         $this->orderItemRepo = $orderItemRepo;
@@ -39,10 +43,19 @@ class OrderService
             throw new BadRequestException('Invalid order');
         };
 
+        $orderFields = [];
+        $orderValues = [];
+
+        if (array_key_exists("user", $orderDataArray)) {
+            $user = $this->authService->login(['user' => $orderDataArray['user']]);
+            array_push($orderFields, 'placed_by');
+            array_push($orderValues, $user['id']);
+        }
+
         $orderUUID = Uuid::uuid4();
 
-        $orderFields = ['number'];
-        $orderValues = [$orderUUID->toString()];
+        array_push($orderFields, 'number');
+        array_push($orderValues, $orderUUID->toString());
 
         $order = $this->orderRepo->createOrder($orderFields, $orderValues);
 
@@ -89,8 +102,7 @@ class OrderService
 
     public function validateOrder($totalPrice) 
     {
-        $url = "http://validate-api";
-        $response = $this->httpRequestHelper->sendPost($url, [ "value" => $totalPrice ]);
+        $response = $this->httpRequestHelper->sendPost([ "value" => (int) $totalPrice ]);
 
         return $response['valid'];
     }
