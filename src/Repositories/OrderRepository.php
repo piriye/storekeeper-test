@@ -15,15 +15,6 @@ class OrderRepository extends BaseRepository
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
-    public function getAll(string $columns = '*'): array
-    {
-        $query = "SELECT " . $columns . " FROM orders";     
-        $statement = $this->pdo->prepare($query);
-        $statement->execute();
-
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
-    }
-
     public function createOrder($fields, $values): array
     {
         $query = $this->prepareInsertQuery($fields, $values,  $this->operators['comma']);
@@ -32,15 +23,25 @@ class OrderRepository extends BaseRepository
         $statement = $this->pdo->prepare($queryString);
         $statement->execute();
 
-        return $this->getOrderByOrderId((int) $this->pdo->lastInsertId());
+        return $this->getOrderById((int) $this->pdo->lastInsertId());
     }
 
-    public function getOrderByOrderId(int $orderId, string $columns = '*')
+    public function getOrderById(int $orderId, string $columns = '*')
     {
         $query = "SELECT " . $columns . " FROM orders WHERE id = " . $orderId;
         $statement = $this->pdo->prepare($query);
         $statement->execute();
 
         return $statement->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function updateOrderById(int $orderId, array $fields, array $values) {
+        $query = $this->prepareQuery($fields, $values, $this->operators['comma']);
+        $queryString = "UPDATE orders SET " . $query . " WHERE id = " . $orderId;
+
+        $statement = $this->pdo->prepare($queryString);
+        $statement->execute();
+
+        return $this->getOrderById((int) $orderId);
     }
 }

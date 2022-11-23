@@ -18,7 +18,7 @@
     "vlucas/valitron": "^1.4"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.5",
+    "phpunit/phpunit": "^9",
     "phpstan/phpstan": "^0.12.99",
     "friendsofphp/php-cs-fixer": "^3.2"
   },

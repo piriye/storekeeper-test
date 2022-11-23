@@ -14,25 +14,20 @@ class BaseController implements StatusCode
         $this->response = $response;
     }
 
-    private function response($data, int $httpCode, $msg = null)
+    private function response($data, int $httpCode)
     {
-        $msg = ($msg) ? $msg : '';
-
-        if ($msg) {
-            $response = array(
-                'code' => $httpCode,
-                'message' => $msg,
-                'data' => $data
-            );
-        }
+        $response = array(
+            'jsonrpc' => '2.0',
+            'result' => $data
+        );
 
         $this->response->setHeader("Content-Type", "application/json");
         $this->response->setStatusCode($httpCode);
         $this->response->setContent(json_encode($response));
     }
 
-    protected function sendResponse(int $httpCode, $data, $msg = null) 
+    protected function sendResponse(int $httpCode, $data) 
     {
-        return $this->response($data, $httpCode, $msg);
+        return $this->response($data, $httpCode);
     }
 }

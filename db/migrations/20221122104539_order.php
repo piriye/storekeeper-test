@@ -21,11 +21,11 @@ final class Order extends AbstractMigration
         $items = $this->table('orders');
 
         $items
-            ->addColumn('order_number', 'string', ['limit' => 45, 'null' => false])
-            ->addColumn('total_price', 'decimal')
+            ->addColumn('number', 'string', ['limit' => 45, 'null' => false])
+            ->addColumn('total', 'decimal')
             ->addColumn('created_at', 'timestamp', ['null' => false, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'timestamp', ['null' => false, 'default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
-            ->addIndex(['order_number'], ['unique' => true]);
+            ->addIndex(['number'], ['unique' => true]);
 
         $items->create();
 
