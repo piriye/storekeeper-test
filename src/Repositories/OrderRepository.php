@@ -56,4 +56,14 @@ class OrderRepository extends BaseRepository
 
         return $statement->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getOrderTotalForLastXSeconds($seconds = 30)
+    {
+        $query = "SELECT SUM(total) FROM $this->table WHERE updated_at > (now() - interval '$seconds second')";
+
+        $statement = $this->pdo->prepare($query);
+        $statement->execute();
+
+        return $statement->fetch(PDO::FETCH_ASSOC);
+    }
 }

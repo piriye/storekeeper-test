@@ -56,9 +56,7 @@ class OrderService
 
         $totalPrice = OrderHelper::getOrderTotal($orderDataArray['items']);
 
-        if (!$this->validateOrder($orderDataArray['items'])) {
-            throw new BadRequestException('Invalid order');
-        };
+        $this->validateOrder($orderDataArray['items']);
 
         $orderUUID = Uuid::uuid4();
 
@@ -112,7 +110,15 @@ class OrderService
     {
         $response = $this->httpRequestHelper->sendPost([ "value" => (int) $totalPrice ]);
 
-        return $response['valid'];
+        if (!$response['valid']) {
+            throw new BadRequestException('Invalid order');
+        }
+
+        $totalForLastXSeconds = (float) $this->orderRepo->getOrderTotalForLastXSeconds()['sum'];
+        
+        if ($totalForLastXSeconds > 5000) {
+            throw new UnableToPlaceOrderException('Total orders have exceeded 5000, please wait 30 seconds and try again');
+        }
     }
 
     public function checkIfUserCanPlaceOrder($userId)
@@ -135,5 +141,6 @@ class OrderService
 
         return false;
     }
+    
 }
 
