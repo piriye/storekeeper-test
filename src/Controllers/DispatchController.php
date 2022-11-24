@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Valitron\Validator;
 
 use Storekeeper\AssesFullstackApi\Controllers\BaseController;
+use Storekeeper\AssesFullstackApi\Exceptions\UnableToPlaceOrderException;
 use Storekeeper\AssesFullstackApi\Services\OrderService;
 use Storekeeper\AssesFullstackApi\Services\AuthService;
 
@@ -60,11 +61,13 @@ class DispatchController extends BaseController
                         $this->sendResponse(self::OK, $orderData, $fieldsToAdd);
                         break;
                 }
+            } catch (UnableToPlaceOrderException $e) {
+                return $this->sendResponse(self::BAD_REQUEST, [ 'message' => $e->getMessage()]);
             } catch (BadRequestException $e) {
-                return $this->sendResponse(self::BAD_REQUEST, $e->getMessage());
+                return $this->sendResponse(self::BAD_REQUEST, [ 'message' => $e->getMessage()]);
             }
         } else {
-            return $this->sendResponse(self::BAD_REQUEST, null, $v->errors());
+            return $this->sendResponse(self::BAD_REQUEST, $v->errors());
         }
     }
 }

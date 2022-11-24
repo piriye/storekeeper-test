@@ -14,7 +14,7 @@ class BaseController implements StatusCode
         $this->response = $response;
     }
 
-    private function response($data, int $httpCode, $fieldsToAdd = [])
+    protected function sendResponse(int $httpCode, $data, $fieldsToAdd = [])
     {
         $response = array(
             'jsonrpc' => '2.0',
@@ -28,10 +28,5 @@ class BaseController implements StatusCode
         $this->response->setHeader("Content-Type", "application/json");
         $this->response->setStatusCode($httpCode);
         $this->response->setContent(json_encode($response));
-    }
-
-    protected function sendResponse(int $httpCode, $data, $fieldsToAdd = []) 
-    {
-        return $this->response($data, $httpCode, $fieldsToAdd);
     }
 }

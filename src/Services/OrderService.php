@@ -3,6 +3,7 @@
 namespace Storekeeper\AssesFullstackApi\Services;
 
 use Ramsey\Uuid\Uuid;
+use Storekeeper\AssesFullstackApi\Exceptions\UnableToPlaceOrderException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 use Storekeeper\AssesFullstackApi\Helpers\HttpRequestHelper;
@@ -37,20 +38,27 @@ class OrderService
     {
         $orderDataArray = OrderHelper::objectToArray($orderData);
 
-        $totalPrice = OrderHelper::getOrderTotal($orderDataArray['items']);
-
-        if (!$this->validateOrder($orderDataArray['items'])) {
-            throw new BadRequestException('Invalid order');
-        };
-
         $orderFields = [];
         $orderValues = [];
 
         if (array_key_exists("user", $orderDataArray)) {
             $user = $this->authService->login(['user' => $orderDataArray['user']]);
+            
+            $canPlaceOrder = $this->checkIfUserCanPlaceOrder($user['id']);
+
+            if (!$canPlaceOrder) {
+                throw new UnableToPlaceOrderException('Wait at least 5 seconds before placing a new order');
+            }
+
             array_push($orderFields, 'placed_by');
             array_push($orderValues, $user['id']);
         }
+
+        $totalPrice = OrderHelper::getOrderTotal($orderDataArray['items']);
+
+        if (!$this->validateOrder($orderDataArray['items'])) {
+            throw new BadRequestException('Invalid order');
+        };
 
         $orderUUID = Uuid::uuid4();
 
@@ -105,6 +113,27 @@ class OrderService
         $response = $this->httpRequestHelper->sendPost([ "value" => (int) $totalPrice ]);
 
         return $response['valid'];
+    }
+
+    public function checkIfUserCanPlaceOrder($userId)
+    {
+        $currentTimestamp = time();
+
+        $order = $this->orderRepo->getLatestOrderByUser($userId);
+
+        if ($order == false) {
+            return true;
+        }
+
+        $orderTimestamp = strtotime($order['updated_at']);
+
+        $diff = $currentTimestamp - $orderTimestamp;
+
+        if ($diff >= 5) {
+            return true;
+        }
+
+        return false;
     }
 }
 
