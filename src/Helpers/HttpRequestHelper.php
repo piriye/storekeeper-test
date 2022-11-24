@@ -17,7 +17,7 @@ class HttpRequestHelper
         $this->client = new Client();
         $this->request = new Request('POST', 'http://validate-api');
     }
-
+    
     public function sendPost(array $postData)
     {
         try {
