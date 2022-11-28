@@ -9,14 +9,14 @@ PHONY: start install update test start-js-dev check-standards lint-fix help buil
 help: ## Outputs this help screen
 	@grep -E '(^[a-zA-Z0-9_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}{printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
 
-start: build ## start the docker services
+start: ## build ## start the docker services
 	docker-compose up -d
 
-build: ## build javascript files
-	$(DOCKER_RUN) npm run build
+# build: ## build javascript files
+# 	$(DOCKER_RUN) npm run build
 
-start-js-dev: ## build javascript node server, webpack dev server with hot reload
-	$(DOCKER_RUN) npm run start
+# start-js-dev: ## build javascript node server, webpack dev server with hot reload
+# 	$(DOCKER_RUN) npm run start
 
 clean: ## clean build
 	$(DOCKER_RUN) npm run prebuild
