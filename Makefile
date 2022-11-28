@@ -11,6 +11,8 @@ help: ## Outputs this help screen
 
 start: ## build ## start the docker services
 	docker-compose up -d
+	docker exec -it storekeeper-test_web_1 composer update
+	docker exec -it storekeeper-test_web_1 php vendor/bin/phinx migrate -c phinx.php
 
 # build: ## build javascript files
 # 	$(DOCKER_RUN) npm run build
@@ -23,11 +25,11 @@ clean: ## clean build
 
 install: ## install all js/php libraries
 	$(DOCKER_RUN) composer install
-	$(DOCKER_RUN) npm install
+	# $(DOCKER_RUN) npm install
 
 update: ## update all js/php libraries
 	$(DOCKER_RUN) composer update
-	$(DOCKER_RUN) npm update
+	# $(DOCKER_RUN) npm update
 
 test: ## run tests
 	$(DOCKER_RUN) $(PHPUNIT)
